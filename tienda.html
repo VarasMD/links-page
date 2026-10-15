@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Moldes listos · Estudio</title>
-  <meta name="description" content="Moldes listos para producir, con ficha técnica incluida.">
+  <meta name="description" content="Moldes listos para producir: mirá sus piezas, su nivel y cuánta tela vas a necesitar antes de comprar.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
         <span>Links</span>
       </a>
       <span class="brand">Estudio</span>
-      <button class="cart-btn" type="button" id="abrir-carrito" aria-label="Abrir carrito">
+      <button class="cart-btn" type="button" id="abrir-carrito" aria-label="Abrir pedido">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
         <span class="cart-count" id="cart-count" hidden>0</span>
       </button>
@@ -29,11 +29,11 @@
     <section class="hero">
       <p class="eyebrow">Tienda</p>
       <h1>Moldes listos</h1>
-      <p class="lead">Moldes probados y listos para producir. Elegí el talle o la curva completa, en digital o impreso.</p>
-      <ul class="perks">
-        <li>Ficha técnica incluida</li>
-        <li>Tabla de medidas</li>
-        <li>Márgenes de costura aplicados</li>
+      <p class="lead">Antes de comprar, mirá cómo se despieza cada molde, qué nivel requiere y cuánta tela vas a necesitar para tu producción.</p>
+      <ul class="steps">
+        <li><span>1</span>Elegí el molde</li>
+        <li><span>2</span>Calculá tu tela</li>
+        <li><span>3</span>Pedí los talles que uses</li>
       </ul>
     </section>
 
@@ -42,22 +42,30 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
         <input id="buscar" type="search" placeholder="Buscar molde…" aria-label="Buscar molde" autocomplete="off">
       </div>
-      <label class="sort">
+      <label class="select">
         <span class="sr-only">Ordenar</span>
         <select id="ordenar">
           <option value="destacados">Destacados</option>
           <option value="precio-asc">Menor precio</option>
           <option value="precio-desc">Mayor precio</option>
-          <option value="nombre">Nombre A–Z</option>
+          <option value="nivel">Más simples primero</option>
+          <option value="tela">Menos tela primero</option>
         </select>
       </label>
       <div class="chips" id="categorias" role="group" aria-label="Categorías"></div>
+      <div class="filters">
+        <div class="levels" id="niveles" role="group" aria-label="Nivel"></div>
+        <label class="select tela">
+          <span class="tela-label">Tengo</span>
+          <select id="tejido" aria-label="Filtrar por tela"></select>
+        </label>
+      </div>
     </section>
 
     <p class="result-count" id="resultado" aria-live="polite"></p>
     <div class="grid" id="grid"></div>
     <div class="empty" id="vacio" hidden>
-      <p>No encontramos moldes con esa búsqueda.</p>
+      <p>No encontramos moldes con esos filtros.</p>
       <button type="button" class="btn-ghost" id="limpiar">Ver todos</button>
     </div>
   </main>
@@ -66,18 +74,25 @@
     <a href="index.html">← Volver a los links</a>
   </footer>
 
-  <!-- Vista rápida de producto -->
+  <!-- Vista de producto -->
   <dialog class="modal" id="producto" aria-labelledby="p-nombre">
     <button class="close" type="button" data-cerrar aria-label="Cerrar">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <div class="modal-body">
-      <div class="modal-media" id="p-media"></div>
+      <div class="modal-media">
+        <div class="view-tabs" role="group" aria-label="Vista">
+          <button type="button" data-vista="prenda" aria-pressed="true">Prenda</button>
+          <button type="button" data-vista="piezas" aria-pressed="false">Piezas</button>
+        </div>
+        <div id="p-media"></div>
+      </div>
       <div class="modal-info">
         <p class="eyebrow" id="p-categoria"></p>
         <h2 id="p-nombre"></h2>
-        <p class="price" id="p-precio"></p>
         <p class="desc" id="p-desc"></p>
+
+        <dl class="specs" id="p-specs"></dl>
 
         <fieldset class="opt">
           <legend>Formato</legend>
@@ -85,23 +100,37 @@
         </fieldset>
 
         <fieldset class="opt">
-          <legend>Talle</legend>
+          <legend class="legend-row">Talles <button type="button" class="link-btn" id="p-todos">Elegir todos</button></legend>
           <div class="sizes" id="p-talles"></div>
-          <div class="curvas" id="p-curvas"></div>
+          <p class="promo" id="p-promo"></p>
         </fieldset>
 
-        <button class="btn-primary" type="button" id="p-agregar">Agregar al carrito</button>
+        <div class="buy">
+          <div class="buy-price">
+            <span class="price" id="p-precio"></span>
+            <s class="price-old" id="p-precio-old"></s>
+          </div>
+          <button class="btn-primary" type="button" id="p-agregar">Agregar al pedido</button>
+        </div>
+
+        <section class="calc" aria-labelledby="calc-titulo">
+          <h3 id="calc-titulo">Calculá tu producción</h3>
+          <p>¿Cuántas prendas querés hacer de cada talle?</p>
+          <div class="calc-grid" id="calc-inputs"></div>
+          <div class="calc-out" id="calc-out" aria-live="polite"></div>
+          <button type="button" class="btn-ghost" id="calc-usar" disabled>Pedir estos talles</button>
+        </section>
 
         <div class="details" id="p-info"></div>
       </div>
     </div>
   </dialog>
 
-  <!-- Carrito -->
+  <!-- Pedido -->
   <dialog class="sheet" id="carrito" aria-labelledby="c-titulo">
     <div class="sheet-head">
       <h2 id="c-titulo">Tu pedido</h2>
-      <button class="close" type="button" data-cerrar aria-label="Cerrar carrito">
+      <button class="close" type="button" data-cerrar aria-label="Cerrar pedido">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>

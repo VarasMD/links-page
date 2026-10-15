@@ -1,65 +1,118 @@
 // Catálogo de la tienda. Editá este archivo para cambiar productos, precios y datos de contacto.
+// Los nombres, precios y condiciones son de ejemplo: reemplazalos por los reales.
 window.TIENDA = {
   config: {
     // Número con código de país, sin "+" ni espacios. Ej: "5491112345678". Vacío = pedido por WhatsApp deshabilitado.
     whatsapp: "",
+    // Calculadora de producción: ancho de tela de referencia y merma por tizado.
+    anchoTela: 1.5,
+    merma: 0.08,
   },
 
   categorias: [
-    { id: "remeras", label: "Remeras" },
+    { id: "remeras", label: "Remeras y tops" },
     { id: "buzos", label: "Buzos" },
     { id: "camperas", label: "Camperas" },
     { id: "camisas", label: "Camisas" },
-    { id: "pantalones", label: "Pantalones" },
-    { id: "pijamas", label: "Pijamas" },
+    { id: "pantalones", label: "Pantalones y shorts" },
+    { id: "descanso", label: "Descanso" },
   ],
 
-  talles: ["S", "M", "L", "XL", "XXL", "XXXL"],
-
-  // Curvas: varios talles en un mismo pedido, con precio por factor sobre el talle individual.
-  curvas: [
-    { id: "curva-base", label: "Curva base", detalle: "S · M · L", cantidad: 3, factor: 2.2 },
-    { id: "curva-completa", label: "Curva completa", detalle: "S a XXXL", cantidad: 6, factor: 3.5 },
+  niveles: [
+    { id: "basico", label: "Básico", n: 1 },
+    { id: "intermedio", label: "Intermedio", n: 2 },
+    { id: "avanzado", label: "Avanzado", n: 3 },
   ],
 
-  // `extra` se suma por cada talle incluido.
+  tejidos: {
+    jersey: "Jersey", pique: "Piqué", lycra: "Lycra", frisa: "Frisa", rustico: "Rústico",
+    tafeta: "Tafeta", gabardina: "Gabardina", denim: "Denim", popelina: "Popelina",
+    lino: "Lino", microfibra: "Microfibra", franela: "Franela",
+  },
+
+  // Consumo relativo al talle M, para la calculadora.
+  talles: [
+    { id: "S", consumo: 0.92 },
+    { id: "M", consumo: 1 },
+    { id: "L", consumo: 1.08 },
+    { id: "XL", consumo: 1.16 },
+    { id: "XXL", consumo: 1.24 },
+    { id: "XXXL", consumo: 1.32 },
+  ],
+
+  // Descuento por cantidad de talles del mismo molde en un pedido.
+  descuentos: [
+    { desde: 3, pct: 15 },
+    { desde: 6, pct: 25 },
+  ],
+
+  // `extra` se suma por cada talle.
   formatos: [
-    { id: "pdf", label: "Digital", detalle: "PDF para imprimir", extra: 0 },
-    { id: "papel", label: "Impreso", detalle: "Escala 1:1 en papel", extra: 4000 },
+    { id: "pdf", label: "Digital", detalle: "PDF en A4 y A0 para plotter", extra: 0 },
+    { id: "papel", label: "Papel", detalle: "Impreso a escala real", extra: 3500 },
   ],
 
   info: [
-    { titulo: "Tiempo de entrega", texto: "Digital: lo recibís por email al confirmar el pago. Impreso: entre 2 y 7 días hábiles, con código de seguimiento." },
-    { titulo: "Retiro por el estudio", texto: "Coordinamos día y horario por email una vez recibido el pago." },
-    { titulo: "Términos de uso", texto: "Uso exclusivo para producción propia. No está permitida la reventa ni la distribución del molde." },
-    { titulo: "Devoluciones", texto: "Aceptamos reclamos por fallas de impresión dentro de las 48 hs. No se aceptan devoluciones por errores en la decisión de compra." },
+    { titulo: "Qué recibís", texto: "Cada talle con costuras incluidas, piquetes e hilo de tela marcados, tabla de medidas y una guía de armado paso a paso." },
+    { titulo: "Envíos", texto: "El digital llega a tu email apenas confirmamos el pago. El impreso se despacha en 3 a 5 días hábiles con seguimiento." },
+    { titulo: "Licencia", texto: "Podés producir y vender las prendas que confecciones. Lo que no está permitido es compartir o revender el molde." },
+    { titulo: "Cambios", texto: "Si el impreso llega dañado, escribinos dentro de los 7 días y lo reponemos sin costo." },
   ],
 
   // silueta: remera | buzo | campera | camisa | pantalon | short
+  // piezas: ver PIEZAS en tienda.js · consumo: metros de tela para una prenda talle M
   productos: [
-    { id: "buzo-boxy", nombre: "Buzo Boxy", categoria: "buzos", silueta: "buzo", precio: 24000, nuevo: true,
-      descripcion: "Buzo de calce amplio y hombro caído, con puños y cintura en rib. Ideal para frisa o french terry." },
-    { id: "baby-tee", nombre: "Baby Tee", categoria: "remeras", silueta: "remera", precio: 16000, nuevo: true,
-      descripcion: "Remera corta y entallada de manga corta. Pensada para tejidos de punto con elasticidad." },
-    { id: "coach-jacket", nombre: "Coach Jacket", categoria: "camperas", silueta: "campera", precio: 28000,
-      descripcion: "Campera liviana con botones a presión, cuello camisero y cordón de ajuste en la cintura." },
-    { id: "jogging-baggy", nombre: "Jogging Baggy", categoria: "pantalones", silueta: "pantalon", precio: 24000,
-      descripcion: "Pantalón jogging de pierna ancha con cintura elastizada, bolsillos laterales y puño opcional." },
-    { id: "camisa-lenadora", nombre: "Camisa Leñadora", categoria: "camisas", silueta: "camisa", precio: 26000,
-      descripcion: "Camisa de calce recto con bolsillos parche en el pecho, canesú y puños con botón." },
-    { id: "remera-boxy", nombre: "Remera Boxy", categoria: "remeras", silueta: "remera", precio: 18000,
-      descripcion: "Remera de silueta cuadrada y hombro caído, cuello a la base. Para jersey de algodón pesado." },
-    { id: "pantalon-recto", nombre: "Pantalón Recto", categoria: "pantalones", silueta: "pantalon", precio: 22000,
-      descripcion: "Pantalón de pierna recta con pretina, bragueta con cierre y bolsillos delanteros y traseros." },
-    { id: "buzo-zip", nombre: "Buzo Zip", categoria: "buzos", silueta: "campera", precio: 26000,
-      descripcion: "Buzo con cierre frontal completo, cuello alto y bolsillos canguro divididos." },
-    { id: "boardshort", nombre: "Boardshort", categoria: "pantalones", silueta: "short", precio: 24000,
-      descripcion: "Traje de baño estilo surf con cintura regulable y un bolsillo lateral." },
-    { id: "remera-ranglan", nombre: "Remera Ranglan", categoria: "remeras", silueta: "remera", precio: 18000,
-      descripcion: "Remera con manga ranglan y cuello redondo, de calce regular." },
-    { id: "pantalon-pijama", nombre: "Pantalón Pijama", categoria: "pijamas", silueta: "pantalon", precio: 18000,
-      descripcion: "Pantalón holgado con cintura elastizada y cordón. Para tejido plano o punto." },
-    { id: "top-pijama", nombre: "Top Pijama", categoria: "pijamas", silueta: "camisa", precio: 18000,
-      descripcion: "Camisa de pijama con cuello solapa, ribete en contraste y bolsillo en el pecho." },
+    { id: "buzo-cafayate", nombre: "Buzo Cafayate", categoria: "buzos", silueta: "buzo", precio: 24000, nuevo: true,
+      nivel: "intermedio", consumo: 1.8, tejidos: ["frisa", "rustico"],
+      piezas: ["delantero", "espalda", "mangaLarga", "puno", "cintura", "bolsillo"],
+      descripcion: "Buzo de hombro caído con bolsillo canguro y terminaciones en rib. Calce relajado." },
+    { id: "remera-iruya", nombre: "Remera Iruya", categoria: "remeras", silueta: "remera", precio: 17000, nuevo: true,
+      nivel: "basico", consumo: 1.1, tejidos: ["jersey"],
+      piezas: ["delantero", "espalda", "mangaCorta", "cuelloRib"],
+      descripcion: "Remera clásica de calce regular, ideal como primer molde o como básico de colección." },
+    { id: "campera-maimara", nombre: "Campera Maimará", categoria: "camperas", silueta: "campera", precio: 28000,
+      nivel: "avanzado", consumo: 2.2, tejidos: ["tafeta", "gabardina"],
+      piezas: ["delantero", "espalda", "mangaLarga", "cuello", "tiraCierre", "bolsillo", "puno"],
+      descripcion: "Rompevientos con cierre frontal, cuello alto y bolsillos ojal. Admite forrería." },
+    { id: "pantalon-humahuaca", nombre: "Pantalón Humahuaca", categoria: "pantalones", silueta: "pantalon", precio: 23000,
+      nivel: "intermedio", consumo: 1.5, tejidos: ["gabardina", "lino"],
+      piezas: ["piernaDel", "piernaTras", "pretina", "bolsillo"],
+      descripcion: "Pierna ancha con pinzas al frente y pretina recta. Cae muy bien en telas con cuerpo." },
+    { id: "camisa-tafi", nombre: "Camisa Tafí", categoria: "camisas", silueta: "camisa", precio: 25000,
+      nivel: "intermedio", consumo: 2, tejidos: ["popelina", "lino"],
+      piezas: ["delantero", "espalda", "canesu", "mangaLarga", "cuello", "puno", "bolsillo"],
+      descripcion: "Camisa oversize con canesú, bolsillo al pecho y puños con botón." },
+    { id: "remera-tilcara", nombre: "Remera Tilcara", categoria: "remeras", silueta: "remera", precio: 18000,
+      nivel: "basico", consumo: 1.3, tejidos: ["jersey", "pique"],
+      piezas: ["delantero", "espalda", "mangaCorta", "cuelloRib"],
+      descripcion: "Remera oversize de hombro caído y largo extendido. Pensada para jersey pesado." },
+    { id: "chaqueta-purmamarca", nombre: "Chaqueta Purmamarca", categoria: "camperas", silueta: "campera", precio: 30000,
+      nivel: "avanzado", consumo: 2, tejidos: ["denim", "gabardina"],
+      piezas: ["delantero", "espalda", "canesu", "mangaLarga", "cuello", "bolsillo", "puno"],
+      descripcion: "Chaqueta estilo trucker con canesú, bolsillos con tapa y pespuntes dobles." },
+    { id: "buzo-amaicha", nombre: "Buzo Amaicha", categoria: "buzos", silueta: "buzo", precio: 26000,
+      nivel: "intermedio", consumo: 2.1, tejidos: ["frisa"],
+      piezas: ["delantero", "espalda", "mangaLarga", "capucha", "puno", "cintura", "bolsillo"],
+      descripcion: "Buzo con capucha de dos piezas, bolsillo canguro y puños en rib." },
+    { id: "jogger-cachi", nombre: "Jogger Cachi", categoria: "pantalones", silueta: "pantalon", precio: 21000,
+      nivel: "basico", consumo: 1.4, tejidos: ["frisa", "rustico"],
+      piezas: ["piernaDel", "piernaTras", "cintura", "bolsillo", "puno"],
+      descripcion: "Jogger con cintura elastizada, bolsillos laterales y puño en el tobillo." },
+    { id: "short-chiquita", nombre: "Short Mar Chiquita", categoria: "pantalones", silueta: "short", precio: 18000,
+      nivel: "basico", consumo: 0.9, tejidos: ["microfibra", "lino"],
+      piezas: ["piernaDel", "piernaTras", "pretina", "bolsillo"],
+      descripcion: "Short de playa con cintura de cordón y bolsillo trasero. Secado rápido en microfibra." },
+    { id: "top-uquia", nombre: "Top Uquía", categoria: "remeras", silueta: "remera", precio: 15000,
+      nivel: "basico", consumo: 0.6, tejidos: ["jersey", "lycra"],
+      piezas: ["delantero", "espalda", "mangaCorta", "cuelloRib"],
+      descripcion: "Top corto y entallado de manga corta, para tejidos de punto con elasticidad." },
+    { id: "camisa-yala", nombre: "Camisa Yala", categoria: "descanso", silueta: "camisa", precio: 19000,
+      nivel: "intermedio", consumo: 1.5, tejidos: ["popelina", "franela"],
+      piezas: ["delantero", "espalda", "mangaCorta", "cuello", "bolsillo"],
+      descripcion: "Camisa de descanso con cuello solapa y ribete en contraste. Combina con el Pantalón Yala." },
+    { id: "pantalon-yala", nombre: "Pantalón Yala", categoria: "descanso", silueta: "pantalon", precio: 17000,
+      nivel: "basico", consumo: 1.6, tejidos: ["popelina", "franela"],
+      piezas: ["piernaDel", "piernaTras", "pretina"],
+      descripcion: "Pantalón holgado de descanso con cintura elastizada y cordón." },
   ],
 };
