@@ -178,30 +178,79 @@ body {
 .group h2::before,
 .group h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
-/* ---------- Celular: las fotos pasan a franjas arriba y abajo ---------- */
+/* ---------- Celular: fotos de fondo a pantalla completa + tarjeta marfil ---------- */
+
+.mobile-bg { display: none; }
 
 @media (max-width: 820px) {
-  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+  .gallery { display: none; }
 
-  .gallery {
-    position: static;
-    height: 170px;
-    grid-template-rows: none;
-    padding: 0;
+  .mobile-bg {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--olive);
   }
-  /* Una sola franja por banda, con varias fotos visibles a la vez */
-  .gallery .tile:nth-child(2) { display: none; }
-  .track { width: 160%; }
-  .gallery-left { padding-top: var(--gap); }
-  .gallery-right { padding-bottom: var(--gap); }
 
-  .content { padding: 40px 20px; }
-  .brand { margin-bottom: 36px; }
+  /* Cada foto se ve ~6 s, se desplaza apenas en horizontal y se funde con la siguiente */
+  .mobile-bg img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: fundido 24s linear infinite;
+  }
+  .mobile-bg img:nth-child(2) { animation-delay: 6s; }
+  .mobile-bg img:nth-child(3) { animation-delay: 12s; }
+  .mobile-bg img:nth-child(4) { animation-delay: 18s; }
+
+  /* Velo oliva para que la tarjeta se lea bien sobre cualquier foto */
+  .mobile-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(35, 34, 28, .28);
+  }
+
+  .layout {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 64px 16px 32px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 36px 20px 28px;
+    background: rgba(245, 242, 237, .94);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px -24px rgba(0, 0, 0, .5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .brand { margin-bottom: 32px; }
   .brand h1 { font-size: 26px; }
+  .group { margin-top: 32px; }
   .group h2 { font-size: 9px; letter-spacing: .18em; }
 }
 
+@keyframes fundido {
+  0%   { opacity: 0; transform: scale(1.08) translateX(2%); }
+  5%   { opacity: 1; }
+  25%  { opacity: 1; }
+  30%  { opacity: 0; transform: scale(1.08) translateX(-2%); }
+  100% { opacity: 0; transform: scale(1.08) translateX(-2%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .track { animation: none; }
+  .track, .mobile-bg img { animation: none; }
+  .mobile-bg img:first-child { opacity: 1; }
   .link, .arrow { transition: none; }
 }
